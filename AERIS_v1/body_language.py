@@ -9,8 +9,9 @@ warnings.filterwarnings("ignore", category=UserWarning, module="sklearn")
 
 
 def emotion_detection(emotion_queue, chatbot_status):
-    print("Waiting for chatbot to start...")
+    # print("Waiting for chatbot to start...")
     chatbot_status.wait() # wait until the chatbot is running
+    print("emotion_detection function is running...")
     mp_drawing = mp.solutions.drawing_utils
     mp_holistic = mp.solutions.holistic 
     with open('../body_language_rf.pkl', mode='rb') as f:
@@ -77,6 +78,7 @@ def emotion_detection(emotion_queue, chatbot_status):
                 emotion_queue.put(emotion_context)
                 
             except:
+                print('excepting')
                 pass
 
             cv2.imshow('Raw Webcam Feed', image)

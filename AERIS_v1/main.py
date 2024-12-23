@@ -2,6 +2,9 @@ import numpy as np
 from body_language import emotion_detection
 from AERIS_chatbot import chatbot
 from multiprocessing import Process, Queue, Event
+import logging
+logging.getLogger('inference_feedback_manager').setLevel(logging.ERROR)
+
 
 # the main thread will be the chatbot
 # the emotion perception thread cam be daemon thread and automatically kill after the chatbot exits
@@ -29,33 +32,29 @@ def AERIS():
     chatbot_status = Event() # only run the emotion analysis after conversation has started
     # convsersation = Process(target = chatbot, args = (conversation_queue, emotion_queue, chatbot_status))
     # convsersation.start()
-    emotion_analysis = Process(target = emotion_detection, args = (emotion_queue, chatbot_status))
+    emotion_analysis = Process(target = emotion_detection, args = (emotion_queue,chatbot_status))
     emotion_analysis.start()
 
-    print("Hi there! My name is AERIS! I'm all ears. Type 'exit' to stop chatting~")
+    AERIS_opening_sentence = "Hi there! My name is AERIS! I'm all ears. Type 'exit' to stop chatting~"
+    print(AERIS_opening_sentence)
+    conversation_queue.put(f"AERIS: {AERIS_opening_sentence}")
 
     while True:
         user_input = input("You: ")
-        
-        # conversation_queue.put(user_input)
-
-        # if either one (chatbot or emotion detection) quit, the whole system quits
+        chatbot_status.set()
         if not emotion_queue.empty():
             emotion_context = emotion_queue.get()
             print(emotion_context)
-            if emotion_context.lower() == 'exit':
-                print("Goodbye! AERIS out ...")
-                emotion_analysis.terminate()
-                break
+        else: 
+            emotion_queue.put("Emotion not detected yet")
+            print("no emotion detected yet")
 
-        if not conversation_queue.empty():
-            conversation_context = conversation_queue.get()
-            if user_input.lower() == 'exit':
-                print("Goodbye! AERIS out ...")
-                break
-
-        chatbot(user_input, conversation_queue, emotion_queue, chatbot_status)
-        conversation_queue.put(user_input)
+        if user_input.lower() == 'exit':
+            print("Goodbye from conversation! AERIS out ...")
+            emotion_analysis.terminate()
+            break
+        chatbot(user_input, conversation_queue, emotion_queue)
+        #conversation_queue.put(user_input)
 
 if __name__ == "__main__":
     AERIS()
