@@ -3,7 +3,7 @@
 ## TLDR
 **AERIS** pronounced as [/ˈɛərɪs/](https://www.vondy.com/phonetically-spell-my-name-generator--FC574ueB?lc=5), stands for "**A**daptive **E**motional **R**esponse and **I**nteractive **S**ystem", which is an AI-in-the-loop emotionally-aware personal assistant powered by light-weight language model that can locally deploy. The smart personal assistant is can detect your emotions through micro-movements and facial expressions with a built-in emotion detector driven by mediapipe, and can provide empathetic responses.
 
-![Pipeline](Graphical Abstract.png)
+![Pipeline](Graphical_Abstract.png)
 
 ## Deployment
 1. The chatbot to be deployed locally is based on **Ollama**, so first [download ollama](https://ollama.com/) to your PC accordingly.
